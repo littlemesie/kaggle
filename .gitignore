@@ -102,3 +102,4 @@ ENV/
 
 .idea
 .ipynb_checkpoints
+data/word2vec-nlp/
