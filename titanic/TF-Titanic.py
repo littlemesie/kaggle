@@ -19,10 +19,11 @@ import tensorflow as tf
 # 数据预处理
 train = pd.read_csv("../data/titanic/train.csv")
 test = pd.read_csv("../data/titanic/test.csv")
+test_label = pd.read_csv("../data/titanic/gender.csv")
 # 删除Name、Ticket、Cabin
 train = train.drop(['Name', 'Ticket', 'Cabin'], axis=1)
-
 test = test.drop(['Name', 'Ticket', 'Cabin'], axis=1)
+test_label = np.reshape(test_label.Survived.values.astype(np.float64), (418, 1))
 combine = [train, test]
 # 性别数值化
 for dataset in combine:
@@ -65,18 +66,34 @@ loss_train = []
 train_acc = []
 test_acc = []
 
-for i in range(25000):
+for i in range(50000):
     index = np.random.permutation(len(data_target))
     data_train = data_train[index]
     data_target = data_target[index]
-    for n in range(len(data_target) // 100 + 1):
-        batch_xs = data_train[n * 100: n * 100 + 100]
-        batch_ys = data_target[n * 100: n * 100 + 100]
-        sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
+    sess.run(train_step, feed_dict={x: data_train, y: data_target})
+    # for n in range(len(data_target) // 100 + 1):
+    #     batch_xs = data_train[n * 100: n * 100 + 100]
+    #     batch_ys = data_target[n * 100: n * 100 + 100]
+    #     sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
 
     if i % 1000 == 0:
-        loss_tmp = sess.run(loss, feed_dict={x: batch_xs, y: batch_ys})
+        loss_tmp = sess.run(loss, feed_dict={x: data_train, y: data_target})
+        # loss_tmp = sess.run(loss, feed_dict={x: batch_xs, y: batch_ys})
         loss_train.append(loss_tmp)
-        train_acc_tmp = sess.run(accuracy, feed_dict={x: batch_xs, y: batch_ys})
+        train_acc_tmp = sess.run(accuracy, feed_dict={x: data_train, y: data_target})
+        # train_acc_tmp = sess.run(accuracy, feed_dict={x: batch_xs, y: batch_ys})
         train_acc.append(train_acc_tmp)
-        print(loss_tmp, train_acc_tmp)
+
+        test_acc_tmp = sess.run(accuracy, feed_dict={x: data_test, y: test_label})
+        test_acc.append(test_acc_tmp)
+        print(loss_tmp, train_acc_tmp, test_acc_tmp)
+
+# plt.plot(loss_train, "k-")
+# plt.title("train loss")
+# plt.show()
+
+plt.plot(train_acc, "b-", label="train acc")
+plt.plot(test_acc, "r--", label="test acc")
+plt.title("train and test accuracy")
+plt.legend()
+plt.show()
