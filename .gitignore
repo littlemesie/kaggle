@@ -103,3 +103,4 @@ ENV/
 .idea
 .ipynb_checkpoints
 data/word2vec-nlp/
+.DS_Store
