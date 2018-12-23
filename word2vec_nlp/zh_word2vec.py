@@ -25,10 +25,6 @@ def main():
     model = word2vec.Word2Vec.load("../data/word2vec-nlp/word2vec.model")
     res = model.wv.similarity('中国','日本')
     print(res)
-    # print("提供 3 種測試模式\n")
-    # print("輸入一個詞，則去尋找前一百個該詞的相似詞")
-    # print("輸入兩個詞，則去計算兩個詞的餘弦相似度")
-    # print("輸入三個詞，進行類比推理")
     #
     # while True:
     #     try:
