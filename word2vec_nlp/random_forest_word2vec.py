@@ -10,8 +10,8 @@ import pandas as pd
 import numpy as np
 from sklearn.cross_validation import cross_val_score
 from gensim.models import Word2Vec
-from word2vec_nlp_tutorial.util import get_data
-from word2vec_nlp_tutorial import word2vec_model
+from word2vec_nlp.util import get_data
+from word2vec_nlp import word2vec_model
 from sklearn.ensemble import RandomForestClassifier
 
 def random_forest_word2vec():

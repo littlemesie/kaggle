@@ -7,8 +7,8 @@
 @summary:
 """
 from gensim.models import Word2Vec
-from word2vec_nlp_tutorial.word2vec_model import get_avg_feature_vecs
-from word2vec_nlp_tutorial.util import review_to_wordlist_w
+from word2vec_nlp.word2vec_model import get_avg_feature_vecs
+from word2vec_nlp.util import review_to_wordlist_w
 path = "../data/word2vec-nlp"
 
 def en_word2vec():

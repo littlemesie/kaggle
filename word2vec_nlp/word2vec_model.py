@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import nltk
 from gensim.models import Word2Vec
-from word2vec_nlp_tutorial.util import review_to_sentences
+from word2vec_nlp.util import review_to_sentences
 
 def en_word2vec_model():
     """英文模型"""
