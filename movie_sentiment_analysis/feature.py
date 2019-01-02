@@ -39,23 +39,3 @@ def count(train, test):
 def text(train, test):
     text = ' '.join(train.loc[train.Sentiment == 4, 'Phrase'].values)
     # text_trigrams = [i for i in ngrams(text.split(), 3)
-
-def logistic(train, test):
-    tokenizer = TweetTokenizer()
-    vectorizer = TFIDF(ngram_range=(1, 2), tokenizer=tokenizer.tokenize)
-    full_text = list(train['Phrase'].values) + list(test['Phrase'].values)
-    vectorizer.fit(full_text)
-    train_vectorized = vectorizer.transform(train['Phrase'])
-    test_vectorized = vectorizer.transform(test['Phrase'])
-    y = train['Sentiment']
-    logreg = LR()
-    ovr = OneVsRestClassifier(logreg)
-
-    ovr.fit(train_vectorized, y)
-    scores = cross_val_score(ovr, train_vectorized, y, scoring='accuracy', n_jobs=-1, cv=3)
-    print('Cross-validation mean accuracy {0:.2f}%, std {1:.2f}.'.format(np.mean(scores) * 100, np.std(scores) * 100))
-
-
-if __name__ == '__main__':
-    train, test = get_data()
-    logistic(train, test)
