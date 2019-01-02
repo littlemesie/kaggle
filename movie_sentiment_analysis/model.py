@@ -54,7 +54,7 @@ def tf_idf(train_data, test_data):
     len_train = len(train_data)
     tokenizer = TweetTokenizer()
     vectorizer = TFIDF(ngram_range=(1, 2), tokenizer=tokenizer.tokenize)
-    full_text = list(train['Phrase'].values) + list(test['Phrase'].values)
+    full_text = list(train_data['Phrase'].values) + list(test_data['Phrase'].values)
     vectorizer.fit(full_text)
     data_all = vectorizer.transform(full_text)
     # 恢复成训练集和测试集部分
