@@ -38,22 +38,29 @@ def logistic(train, test):
 
 def random_forest(train, test):
     """随机森林"""
+    train_x, test_x = tf_idf(train, test)
     forest = RandomForestClassifier(n_estimators=100, n_jobs=2)
-    tokenizer = TweetTokenizer()
-    vectorizer = TFIDF(ngram_range=(1, 2), tokenizer=tokenizer.tokenize)
-    full_text = list(train['Phrase'].values) + list(test['Phrase'].values)
-    vectorizer.fit(full_text)
-    train_vectorized = vectorizer.transform(train['Phrase'])
-    test_vectorized = vectorizer.transform(test['Phrase'])
     label = train['Sentiment']
-    forest = forest.fit(train_vectorized, label)
+    forest = forest.fit(train_x, label)
 
     # 测试集
-    result = forest.predict(test_vectorized)
+    result = forest.predict(test_x)
 
     print('保存结果...')
     submission_df = pd.DataFrame(data={'id': test['id'], 'sentiment': result})
     print(submission_df.head(10))
+
+def tf_idf(train_data, test_data):
+    len_train = len(train_data)
+    tokenizer = TweetTokenizer()
+    vectorizer = TFIDF(ngram_range=(1, 2), tokenizer=tokenizer.tokenize)
+    full_text = list(train['Phrase'].values) + list(test['Phrase'].values)
+    vectorizer.fit(full_text)
+    data_all = vectorizer.transform(full_text)
+    # 恢复成训练集和测试集部分
+    train_x = data_all[:len_train]
+    test_x = data_all[len_train:]
+    return train_x, test_x
 
 if __name__ == '__main__':
     train, test = feature.get_data()
