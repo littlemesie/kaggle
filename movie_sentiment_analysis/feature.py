@@ -10,7 +10,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import ngrams
 from nltk.tokenize import TweetTokenizer
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF

@@ -9,7 +9,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import ngrams
 from nltk.tokenize import TweetTokenizer
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
@@ -42,12 +41,12 @@ def random_forest(train, test):
     forest = RandomForestClassifier(n_estimators=100, n_jobs=2)
     label = train['Sentiment']
     forest = forest.fit(train_x, label)
-
+    print('Score: ', forest.score(train_x, label))
     # 测试集
     result = forest.predict(test_x)
 
     print('保存结果...')
-    submission_df = pd.DataFrame(data={'id': test['id'], 'sentiment': result})
+    submission_df = pd.DataFrame(data={'PhraseId': test['PhraseId'], 'Sentiment': result})
     print(submission_df.head(10))
 
 def tf_idf(train_data, test_data):
