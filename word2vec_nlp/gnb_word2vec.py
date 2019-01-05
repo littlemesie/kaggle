@@ -9,7 +9,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.naive_bayes import GaussianNB as GNB
-from sklearn.cross_validation import cross_val_score
+from sklearn.model_selection import cross_val_score
 from gensim.models import Word2Vec
 from word2vec_nlp.util import get_data
 from word2vec_nlp import word2vec_model

@@ -6,15 +6,11 @@
 @date: 2018/12/29 21:04
 @summary:
 """
-
+import re
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from nltk.tokenize import TweetTokenizer
-from sklearn.linear_model import LogisticRegression as LR
-from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.model_selection import cross_val_score
+import nltk
+from gensim.models import Word2Vec
 
 # 获取数据
 def get_data():
@@ -38,3 +34,83 @@ def count(train, test):
 def text(train, test):
     text = ' '.join(train.loc[train.Sentiment == 4, 'Phrase'].values)
     # text_trigrams = [i for i in ngrams(text.split(), 3)
+
+def en_word2vec_model():
+    """英文模型"""
+    path = "../data/word2vec-nlp"
+    # 载入数据集
+    train, test = get_data()
+    """word2vec_model"""
+    tokenizer =nltk.data.load('../data/word2vec-nlp/punkt/english.pickle')
+
+    sentences = []
+    for i, phrase in enumerate(train['Phrase'].values):
+        sentences += phrase_to_sentences(phrase, tokenizer)
+    print('预处理 train data...')
+    # 模型的构建
+    # 模型参数
+    num_features = 300  # Word vector dimensionality
+    min_word_count = 40  # Minimum word count
+    num_workers = 4  # Number of threads to run in parallel
+    context = 10  # Context window size
+    downsampling = 1e-3  # Downsample setting for frequent words
+    # 训练模型
+    print("训练模型中...")
+    model = Word2Vec(sentences, workers=num_workers,size=num_features, min_count=min_word_count,
+                     window=context, sample=downsampling)
+    # 保存模型
+    model.init_sims(replace=True)
+    model_name = "%s/%s" % (path, "en_word2vec_model")
+    model.save(model_name)
+
+def phrase_to_sentences(phrase, tokenizer, remove_stopwords=False):
+
+    raw_sentences = tokenizer.tokenize(phrase)
+    sentences = []
+    for raw_sentence in raw_sentences:
+        if len(raw_sentence) > 0:
+
+            sentences.append(phrase_to_wordlist(raw_sentence, remove_stopwords))
+    return sentences
+
+def phrase_to_wordlist(phrase, remove_stopwords=False):
+
+    phrase_text = re.sub("[^a-zA-Z]"," ", phrase)
+    words = phrase_text.lower().split()
+    return(words)
+
+def get_avg_feature_vecs(phrases, model, num_features):
+    '''
+    给定一个文本列表，每个文本由一个词列表组成，返回每个文本的词向量平均值
+    '''
+    counter = 0
+    phrases_feature_vecs = np.zeros((len(phrases), num_features), dtype="float32")
+
+    for phrase in phrases:
+        if counter % 5000 == 0:
+            print("Phrase %d of %d" % (counter, len(phrases)))
+
+        phrases_feature_vecs[counter] = make_feature_vec(phrase, model, num_features)
+        counter = counter + 1
+
+    return phrases_feature_vecs
+
+def make_feature_vec(words, model, num_features):
+    """对段落中的所有词向量进行取平均操作"""
+
+    featureVec = np.zeros((num_features,), dtype="float32")
+    nwords = 0.
+
+    # Index2word包含了词表中的所有词，为了检索速度，保存到set中
+    index2word_set = set(model.wv.index2word)
+    for word in words:
+        if word in index2word_set:
+            nwords = nwords + 1.
+            featureVec = np.add(featureVec, model[word])
+
+    # 取平均
+    featureVec = np.divide(featureVec, nwords)
+    return featureVec
+
+
+# en_word2vec_model()
