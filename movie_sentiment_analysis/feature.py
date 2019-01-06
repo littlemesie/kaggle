@@ -77,7 +77,7 @@ def phrase_to_wordlist(phrase, remove_stopwords=False):
 
     phrase_text = re.sub("[^a-zA-Z]"," ", phrase)
     words = phrase_text.lower().split()
-    return(words)
+    return words
 
 def get_avg_feature_vecs(phrases, model, num_features):
     '''
@@ -89,8 +89,9 @@ def get_avg_feature_vecs(phrases, model, num_features):
     for phrase in phrases:
         if counter % 5000 == 0:
             print("Phrase %d of %d" % (counter, len(phrases)))
+        feature_vec = make_feature_vec(phrase, model, num_features)
 
-        phrases_feature_vecs[counter] = make_feature_vec(phrase, model, num_features)
+        phrases_feature_vecs[counter] = feature_vec
         counter = counter + 1
 
     return phrases_feature_vecs
@@ -113,4 +114,14 @@ def make_feature_vec(words, model, num_features):
     return featureVec
 
 
-# en_word2vec_model()
+def en_word2vec():
+    """word2vec"""
+    path = "../data/word2vec-nlp"
+    model_name = "%s/%s" % (path, "en_word2vec_model")
+    model = Word2Vec.load(model_name)
+    w = model.wv.doesnt_match("man woman child kitchen".split())
+    print(w)
+    man_similar = model.wv.most_similar("man", topn=5)
+    print(man_similar)
+
+# en_word2vec()

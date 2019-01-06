@@ -17,7 +17,6 @@ from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB as MNB
 from gensim.models import Word2Vec
-from movie_sentiment_analysis.feature import en_word2vec_model
 
 from movie_sentiment_analysis import feature
 
@@ -45,18 +44,23 @@ def random_forest_word2vec(train, test):
     """随机森林+word2vec"""
     train_x = train['Phrase']
     test_x = test['Phrase']
+
     y = train['Sentiment']
     path = "../data/word2vec-nlp"
     model_name = "%s/%s" % (path, "en_word2vec_model")
     model = Word2Vec.load(model_name)
     train_data_vecs = feature.get_avg_feature_vecs(train_x, model, 300)
+    train_data_vecs[np.isnan(train_data_vecs)] = np.mean(train_data_vecs[~np.isnan(train_data_vecs)])
+
     test_data_vecs = feature.get_avg_feature_vecs(test_x, model, 300)
-    forest = RandomForestClassifier(n_estimators=100, n_jobs=2)
-    scores = np.mean(cross_val_score(forest, train_data_vecs, y, cv=3, n_jobs=2, scoring='accuracy'))
+    test_data_vecs[np.isnan(test_data_vecs)] = np.mean(test_data_vecs[~np.isnan(test_data_vecs)])
+    forest = RandomForestClassifier(n_estimators=30, n_jobs=2)
+    forest = forest.fit(train_data_vecs, y)
+    scores = np.mean(cross_val_score(forest, train_data_vecs, y, cv=3, n_jobs=-1, scoring='accuracy'))
     print("Cross-validation mean accuracy {0:.2f}% ".format(scores * 100))
 
     # 测试集
-    result = forest.predict(test_data_vecs)
+    # result = forest.predict(test_data_vecs)
 
 def tf_idf(train_data, test_data):
     len_train = len(train_data)
@@ -75,3 +79,4 @@ if __name__ == '__main__':
     # logistic(train, test)
     # naive_bayes(train, test)
     random_forest_word2vec(train, test)
+
