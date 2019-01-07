@@ -59,10 +59,10 @@ def model(train_df, validation_df, test_df):
     # Prediction on the test set.
     predict_test_input_fn = tf.estimator.inputs.pandas_input_fn(
         test_df, shuffle=False)
-
+    # hub.Module()
     embedded_text_feature_column = hub.text_embedding_column(
         key="Phrase",
-        module_spec="https://tfhub.dev/google/nnlm-en-dim128/1",
+        module_spec="/Users/t/module",
         trainable=True)
 
     # We don't need to keep many checkpoints.
@@ -75,12 +75,13 @@ def model(train_df, validation_df, test_df):
         config=run_config,
         optimizer=tf.train.AdagradOptimizer(learning_rate=0.003))
 
-    train_eval_result = estimator.evaluate(input_fn=predict_train_input_fn)
-    validation_eval_result = estimator.evaluate(input_fn=predict_validation_input_fn)
+    train_eval_result = estimator.evaluate(input_fn=train_input_fn)
+    validation_eval_result = estimator.evaluate(input_fn=predict_test_input_fn)
 
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Validation set accuracy: {accuracy}".format(**validation_eval_result))
 
 if __name__ == '__main__':
     train_df, validation_df, test_df = get_data()
-    print(train_df.head())
+    model(train_df, validation_df, test_df)
+    # print(train_df.head())
