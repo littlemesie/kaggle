@@ -10,12 +10,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from nltk.tokenize import TweetTokenizer
-from sklearn.linear_model import LogisticRegression as LR
+from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import MultinomialNB as MNB
+from sklearn.naive_bayes import MultinomialNB
 from gensim.models import Word2Vec
 
 from movie_sentiment_analysis import feature
@@ -24,20 +24,21 @@ def logistic(train, test):
     """逻辑回归"""
     train_x, test_x = tf_idf(train, test)
     y = train['Sentiment']
-    logreg = LR()
-    ovr = OneVsRestClassifier(logreg)
-
-    ovr.fit(train_x, y)
-    scores = cross_val_score(ovr, train_x, y, scoring='accuracy', n_jobs=-1, cv=3)
-    print('Cross-validation mean accuracy {0:.2f}%'.format(np.mean(scores) * 100))
+    model_lr = LogisticRegression(multi_class='ovr', C=1, solver='sag')
+    # ovr = OneVsRestClassifier(model_lr)
+    # ovr.fit(train_x, y)
+    model_lr.fit(train_x, y)
+    scores = cross_val_score(model_lr, train_x, y, scoring='accuracy', n_jobs=-1, cv=3)
+    print('cross validation mean accuracy {0:.2f}%'.format(np.mean(scores) * 100))
 
 def naive_bayes(train, test):
     """贝叶斯"""
     train_x, test_x = tf_idf(train, test)
     y = train['Sentiment']
-    model_NB = MNB()
-    scores = np.mean(cross_val_score(model_NB, train_x, y, cv=3, n_jobs=2, scoring='accuracy'))
-    print('Cross-validation mean accuracy {0:.2f}%'.format(scores * 100))
+    model_nb = MultinomialNB()
+    model_nb.fit(train_x, y)
+    scores = np.mean(cross_val_score(model_nb, train_x, y, cv=3, n_jobs=-1, scoring='accuracy'))
+    print('cross validation mean accuracy {0:.2f}%'.format(scores * 100))
 
 
 def random_forest_word2vec(train, test):
@@ -76,7 +77,7 @@ def tf_idf(train_data, test_data):
 
 if __name__ == '__main__':
     train, test = feature.get_data()
-    # logistic(train, test)
+    logistic(train, test)
     # naive_bayes(train, test)
-    random_forest_word2vec(train, test)
+    # random_forest_word2vec(train, test)
 
