@@ -25,8 +25,6 @@ def get_data():
 def data_handle(train,test,combine):
     """"""
 
-
-
 def sex(train, test, combine):
     """性别处理"""
     # 获取名字里有Miss Mr 组成新特征
