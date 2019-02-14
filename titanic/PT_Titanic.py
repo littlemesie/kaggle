@@ -93,8 +93,10 @@ class TitanicNet(nn.Module):
 
 
 model = TitanicNet()
-
+# 损失函数 均方误差
 criterion = nn.MSELoss()
+# 创建优化器（optimizer）
+# Adam 一种基于一阶梯度的随机目标函数优化算法一种基于一阶梯度的随机目标函数优化算法
 optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate,
                              weight_decay=weight_decay)
 
@@ -127,6 +129,7 @@ def train(inp_val, rest_inp_train, out_val, rest_out_train):
                 op.append([1, 0])
             else:
                 op.append([0, 1])
+        # 清零梯度缓存
         optimizer.zero_grad()
         q = Variable(q)
         y_pred = model(q)
@@ -134,6 +137,7 @@ def train(inp_val, rest_inp_train, out_val, rest_out_train):
 
         loss = criterion(y_pred, target)
         loss.backward()
+        # 更新参数
         optimizer.step()
 
         # print(target,y_pred)
