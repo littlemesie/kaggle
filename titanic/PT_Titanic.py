@@ -97,6 +97,7 @@ model = TitanicNet()
 criterion = nn.MSELoss()
 # 创建优化器（optimizer）
 # Adam 一种基于一阶梯度的随机目标函数优化算法一种基于一阶梯度的随机目标函数优化算法
+# 更新网络的权重
 optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate,
                              weight_decay=weight_decay)
 
@@ -136,6 +137,7 @@ def train(inp_val, rest_inp_train, out_val, rest_out_train):
         target = Variable(torch.Tensor(op))
 
         loss = criterion(y_pred, target)
+        # 反向传播权重
         loss.backward()
         # 更新参数
         optimizer.step()
