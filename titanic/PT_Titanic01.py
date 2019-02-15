@@ -64,6 +64,7 @@ inp_train = df_train.drop(['PassengerId','Name','Ticket','Survived','Cabin'], ax
 out_train = df_train['Survived']
 inp_test = df_test.drop(['PassengerId','Name','Ticket','Cabin'], axis=1)
 
+
 # 模型构建
 learning_rate = 0.05
 weight_decay = 0.0001
@@ -236,4 +237,4 @@ def test(inp_test):
         pred.to_csv("Submission.csv", index=False)
 
 train(inp_val,rest_inp_train,out_val,rest_out_train)
-test(inp_test)
+# test(inp_test)
