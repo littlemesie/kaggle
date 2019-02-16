@@ -6,8 +6,6 @@
 @date: 2018/12/13 23:40
 @summary:
 """
-
-# -*- coding:utf-8 -*-
 import pandas as pd
 import numpy as np
 import random as rnd
