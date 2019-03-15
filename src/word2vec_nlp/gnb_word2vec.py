@@ -21,7 +21,7 @@ def gbn_word2vec():
     path = "../data/word2vec-nlp"
     model_name = "%s/%s" % (path, "300features_40minwords_10context")
     model = Word2Vec.load(model_name)
-    train_data_vecs = word2vec_model.get_avg_feature_vecs(train_data,model, 300)
+    train_data_vecs = word2vec_model.get_avg_feature_vecs(train_data, model, 300)
     test_data_vecs = word2vec_model.get_avg_feature_vecs(test_data, model, 300)
     model_GNB.fit(train_data_vecs, label)
 

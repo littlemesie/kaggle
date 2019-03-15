@@ -7,12 +7,9 @@
 @summary:
 """
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from nltk.tokenize import TweetTokenizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
-from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
