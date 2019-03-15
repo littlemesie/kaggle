@@ -106,3 +106,4 @@ data/word2vec-nlp/
 .DS_Store
 kaggle/
 data/pt_img/
+data/
