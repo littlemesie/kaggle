@@ -14,11 +14,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
 import nltk
 from nltk.corpus import stopwords
 
-path = "../data/word2vec-nlp"
+path = "../../data/word2vec-nlp"
 
 def get_data():
     """数据预处理"""
-
     # 载入数据集
     train = pd.read_csv('%s/%s' % (path, 'labeledTrainData.tsv'), header=0, delimiter="\t", quoting=3)
     test = pd.read_csv('%s/%s' % (path, 'testData.tsv'), header=0, delimiter="\t", quoting=3)
@@ -35,6 +34,7 @@ def get_data():
     return train_data, test_data, label, train, test
 
 def review_to_wordlist(review):
+    """从html中解析"""
     soup = BeautifulSoup(review, "html.parser")
     review_text = re.sub('[^a-zA-Z]', ' ',soup.get_text())
     # 转为小写
