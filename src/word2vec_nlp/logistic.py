@@ -9,8 +9,9 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression as LR
+from word2vec_nlp import util
 
-def logistic(train_x, test_x, test,label):
+def logistic(train_x, test_x, test, label):
 
     model_LR = LR(penalty='l2', dual=True, random_state=0)
     model_LR.fit(train_x, label)
@@ -19,3 +20,8 @@ def logistic(train_x, test_x, test,label):
     print("结果:")
     submission_df = pd.DataFrame(data={'id': test['id'], 'sentiment': test_predicted})
     print(submission_df.head(10))
+
+if __name__ == '__main__':
+    train_data, test_data, label, train, test = util.get_data()
+    train_x, test_x = util.tf_idf(train_data, test_data)
+    logistic(train_x, test_x, test, label)
