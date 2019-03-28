@@ -100,11 +100,4 @@ ENV/
 # mypy
 .mypy_cache/
 
-.idea
-.ipynb_checkpoints
-data/word2vec-nlp/
-.DS_Store
-kaggle/
-data/pt_img/
-data/
-.bin
+model/
