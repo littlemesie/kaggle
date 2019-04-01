@@ -71,7 +71,7 @@ class CNN(nn.Module):
         return output, x  # return x for visualization
 
 
-def load_data_train(train_tatio = 0.8):
+def load_data_train(train_tatio= 0.8):
     """数据加载"""
     pd_train = pd.read_csv('../../data/digit-recognizer/train.csv', header=0)
     # 切分为训练集和测试集
@@ -104,38 +104,6 @@ def optimizer_lossfunction(cnn,lr=0.0001):
     optimizer = torch.optim.Adam(cnn.parameters(), lr=lr, betas=(0.9, 0.99))
     loss_func = nn.CrossEntropyLoss()
     return optimizer, loss_func
-
-
-def show(last_layer, y_test):
-    try:
-        from sklearn.manifold import TSNE
-        HAS_SK = True
-    except:
-        HAS_SK = False
-        print('Please install sklearn for layer visualization')
-
-    if HAS_SK:
-        # Visualization of trained flatten layer (T-SNE)
-        tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
-        plot_only = 500
-        low_dim_embs = tsne.fit_transform(last_layer.data.numpy()[:plot_only, :])
-        labels = y_test.numpy()[:plot_only]
-        plot_with_labels(low_dim_embs, labels)
-
-
-def plot_with_labels(lowDWeights, labels):
-    plt.cla()
-    X, Y = lowDWeights[:, 0], lowDWeights[:, 1]
-    for x, y, s in zip(X, Y, labels):
-        from matplotlib import cm
-        c = cm.rainbow(int(255 * s / 9))
-        plt.text(x, y, s, backgroundcolor=c, fontsize=9)
-    plt.xlim(X.min(), X.max())
-    plt.ylim(Y.min(), Y.max())
-    plt.title('Visualize last layer')
-    plt.show()
-    plt.pause(0.01)
-
 
 def train_model(cnn, optimizer, loss_func, loader_train, loader_test):
     """训练模型"""
