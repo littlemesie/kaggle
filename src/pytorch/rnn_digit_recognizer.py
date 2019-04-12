@@ -46,24 +46,29 @@ loss_func = nn.CrossEntropyLoss()
 
 def train_model(data_trainX, data_trainY, data_testX, data_testY):
     """训练"""
-    test_x = torch.Tensor(data_testX).float()
-    test_y = torch.Tensor(data_testY).float()
+    test_x = Variable(torch.Tensor(data_testX).float())
+    test_y = Variable(torch.Tensor(data_testY).long())
+    test_sum = test_y.size(0)
     for epoch in range(EPOCH):
         step = 0
         for i in range(0, len(data_trainX), BATCH_SIZE):
             step += 1
-            b_x = Variable(torch.Tensor(data_trainX[i:i + BATCH_SIZE]).float())
-            b_y = Variable(torch.Tensor(data_trainY[i:i + BATCH_SIZE]).float())
-
+            b_x = Variable(torch.Tensor(data_trainX[i:i + BATCH_SIZE]).float().view(-1, 28, 28))
+            b_y = Variable(torch.Tensor(data_trainY[i:i + BATCH_SIZE]).long())
             output = rnn(b_x)
             loss = loss_func(output, b_y)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             if step % 50 == 0:
-                test_output = rnn(test_x)
+                test_output = rnn(test_x.view(-1, 28, 28))
                 pred_y = torch.max(test_output, 1)[1].data.numpy().squeeze()
-                accuracy = sum(pred_y == test_y) / float(test_y.size)
+                accuracy_sum = 0
+                for i in range(test_sum):
+                    if pred_y[i] == test_y[i]:
+                        # print('预测:',pred_y[i], '正确:', y_test[i])
+                        accuracy_sum += 1
+                accuracy = accuracy_sum / test_sum
                 print('Epoch: %s' % epoch)
                 print('train loss: %s' % loss.data)
                 print('test accuracy: %s' % accuracy)
