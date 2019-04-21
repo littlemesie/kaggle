@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
-from matplotlib import cm
 
 def load_data_train(train_tatio= 0.8):
     """数据训练加载"""

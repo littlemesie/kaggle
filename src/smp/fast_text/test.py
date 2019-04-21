@@ -20,12 +20,12 @@ with open("../../../data/smp/test.txt", "r", encoding='utf-8') as f:
         try:
             label = line[1].strip()
         except:
-            label = 0
+            continue
 
         try:
             label_ = classifier.predict(text)
         except:
-            label_ = [[0]]
+            continue
         # print(label)
         # print(label_[0][0])
         if label == label_[0][0]:
